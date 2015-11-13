@@ -15,10 +15,17 @@ namespace MVC作業.Controllers
         private 客戶資料Entities db = new 客戶資料Entities();
 
         // GET: 客戶銀行資訊
-        public ActionResult Index()
+        public ActionResult Index(string search)
         {
-            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料);
-            return View(客戶銀行資訊.ToList());
+            //var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料);
+            //return View(客戶銀行資訊.ToList());
+            var data = db.客戶銀行資訊.Where(p => p.是否已刪除 == false);
+            
+            if (!String.IsNullOrEmpty(search))
+            {
+                data = data.Where(p => p.客戶資料.客戶名稱.Contains(search));
+            }
+            return View(data);
         }
         public ActionResult 帳戶清單(int id)
         {
@@ -120,10 +127,14 @@ namespace MVC作業.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            //客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            //db.客戶銀行資訊.Remove(客戶銀行資訊);
+            //db.SaveChanges();
+            //return RedirectToAction("Index");     
             客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
-            db.客戶銀行資訊.Remove(客戶銀行資訊);
+            客戶銀行資訊.是否已刪除 = true;
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index");  
         }
 
         protected override void Dispose(bool disposing)

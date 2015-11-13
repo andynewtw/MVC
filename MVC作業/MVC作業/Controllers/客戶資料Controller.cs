@@ -18,7 +18,8 @@ namespace MVC作業.Controllers
         public ActionResult Index(string search)
         {
             //return View(db.客戶資料.ToList());
-            var data = db.客戶資料.AsQueryable();
+            //var data = db.客戶資料.AsQueryable();
+            var data = db.客戶資料.Where(p => p.是否已刪除 == false);
 
             if (!String.IsNullOrEmpty(search))
             {
@@ -77,6 +78,7 @@ namespace MVC作業.Controllers
             {
                 return HttpNotFound();
             }
+            
             return View(客戶資料);
         }
 
@@ -116,8 +118,12 @@ namespace MVC作業.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
-            db.客戶資料.Remove(客戶資料);
+            //客戶資料 客戶資料 = db.客戶資料.Find(id);
+            //db.客戶資料.Remove(客戶資料);
+            //db.SaveChanges();
+            //return RedirectToAction("Index");
+            var data = db.客戶資料.Find(id);
+            data.是否已刪除 = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }

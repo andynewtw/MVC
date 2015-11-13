@@ -9,6 +9,16 @@
 <p>
     @Html.ActionLink("新增聯絡人", "Create")
 </p>
+
+@using (Html.BeginForm())
+{
+    <input type="search" name="search" value="" accesskey="s" placeholder="請輸入關鍵字 (Alt+S)" />
+    <button type="submit" class="btn btn-info">
+        <span class="glyphicon glyphicon-search"></span> 搜尋
+    </button>
+}
+
+<br />
 <table class="table table-striped">
     <tr>
         <th>

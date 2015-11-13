@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MVC作業.Models;
+using System.Data.Entity.Validation;
 
 namespace MVC作業.Controllers
 {
@@ -15,10 +16,17 @@ namespace MVC作業.Controllers
         private 客戶資料Entities db = new 客戶資料Entities();
 
         // GET: 客戶聯絡人
-        public ActionResult Index()
+        public ActionResult Index(string search)
         {
-            var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
-            return View(客戶聯絡人.ToList());
+            //var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
+            //return View(客戶聯絡人.ToList());
+            var data = db.客戶聯絡人.Where(p => p.是否已刪除 == false);
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                data = data.Where(p => p.客戶資料.客戶名稱.Contains(search));
+            }
+            return View(data);
         }
 
         // GET: 客戶聯絡人/Details/5
@@ -120,9 +128,15 @@ namespace MVC作業.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            //客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
+            //db.客戶聯絡人.Remove(客戶聯絡人);
+            //db.SaveChanges();
+            //return RedirectToAction("Index");
             客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
-            db.客戶聯絡人.Remove(客戶聯絡人);
-            db.SaveChanges();
+            客戶聯絡人.是否已刪除 = true;
+
+                db.SaveChanges();
+
             return RedirectToAction("Index");
         }
 
